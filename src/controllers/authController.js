@@ -5,8 +5,8 @@ export const registerUser = async (req, res) => {
   const { name, email, password, age, gender, height, weight, preferences } =
     req.body;
 
-  const parsedHeight = typeof height === 'string' ? parseFloat(height) : height;
-  const parsedWeight = typeof weight === 'string' ? parseFloat(weight) : weight;
+  //   const parsedHeight = typeof height === 'string' ? parseFloat(height) : height;
+  //   const parsedWeight = typeof weight === 'string' ? parseFloat(weight) : weight;
 
   const user = await userModel.findOne({ email });
 
@@ -22,8 +22,8 @@ export const registerUser = async (req, res) => {
     password,
     age,
     gender,
-    height: parsedHeight,
-    weight: parsedWeight,
+    height,
+    weight,
     preferences,
   });
   const token = generateToken({ id: newUser._id, role: newUser.role });
