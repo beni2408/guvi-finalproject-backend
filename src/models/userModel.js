@@ -10,13 +10,15 @@ const userSchema = new mongoose.Schema(
     gender: { type: String, required: true, enum: ["male", "female"] },
     height: Number,
     weight: Number,
-    preferences: String,
   },
   { timestamps: true }
 );
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, parseInt(process.env.SALT_ROUNDS));
+  this.password = await bcrypt.hash(
+    this.password,
+    parseInt(process.env.SALT_ROUNDS)
+  );
   next();
 });
 const userModel = mongoose.model("User", userSchema);
