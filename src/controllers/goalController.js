@@ -32,23 +32,32 @@ export const updateGoalProgress = async (req, res) => {
   const { id } = req.params;
   const { current } = req.body;
 
-  const goal = await goalModel.findOneAndUpdate(
-    { _id: id, userId: req.user._id },
-    { current, status: current >= goal.target ? "completed" : "active" },
-    { new: true }
-  );
-
-  if (!goal) {
+  // First find the goal to get the target value
+  const existingGoal = await goalModel.findOne({ _id: id, userId: req.user._id });
+  
+  if (!existingGoal) {
     return res.status(404).json({
       status: "error",
       message: "Goal not found"
     });
   }
 
+  // Calculate status based on current vs target
+  const status = current >= existingGoal.target ? "completed" : "active";
+
+  // Update the goal with new progress and status
+  const updatedGoal = await goalModel.findOneAndUpdate(
+    { _id: id, userId: req.user._id },
+    { current, status },
+    { new: true }
+  );
+
+  console.log('Goal progress updated:', { id, current, target: existingGoal.target, status });
+
   res.status(200).json({
     status: "success",
     message: "Goal progress updated successfully",
-    data: { goal }
+    data: { goal: updatedGoal }
   });
 };
 
