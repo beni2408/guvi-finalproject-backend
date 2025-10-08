@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import connectDB from "./src/config/db.js";
 import authRouter from "./src/routes/userRoutes.js";
 import fitnessRouter from "./src/routes/fitnessRoutes.js";
@@ -11,6 +11,8 @@ import mentalHealthRouter from "./src/routes/mentalHealthRoutes.js";
 dotenv.config();
 
 const app = express();
+app.use(cors()); // Allow all origins (for development)
+
 app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/fitness", fitnessRouter);
