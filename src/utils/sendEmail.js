@@ -1,6 +1,8 @@
 import sgMail from '@sendgrid/mail';
 
 export default async function sendEmail({ to, subject, text, html }) {
+  console.log("SENDGRID_API_KEY exists:", !!process.env.SENDGRID_API_KEY);
+  
   if (!process.env.SENDGRID_API_KEY) {
     console.log("SendGrid API key not configured");
     return;
