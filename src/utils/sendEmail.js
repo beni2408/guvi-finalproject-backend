@@ -12,10 +12,15 @@ export default async function sendEmail({ to, subject, text, html }) {
 
   const msg = {
     to,
-    from: process.env.EMAIL_USER || 'noreply@yourapp.com',
+    from: 'jascarshw@gmail.com', // Must be verified in SendGrid
     subject,
     text,
     html,
+    mail_settings: {
+      sandbox_mode: {
+        enable: false // Set to true for testing without sending real emails
+      }
+    }
   };
 
   try {
