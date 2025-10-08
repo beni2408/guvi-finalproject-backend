@@ -1,24 +1,29 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
 export default async function sendEmail({ to, subject, text, html }) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.zoho.in',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
-  const msg = {
+  const mailOptions = {
+    from: `"Jascar Health & Wellness" <${process.env.EMAIL_USER}>`,
     to,
-    from: {
-      email: process.env.EMAIL_USER,
-      name: 'Jascar Health & Wellness'
-    },
     subject,
     text,
     html
   };
 
   try {
-    const response = await sgMail.send(msg);
+    const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully to:', to);
-    console.log('SendGrid response:', response[0].statusCode);
+    console.log('Message ID:', info.messageId);
   } catch (error) {
-    console.error('SendGrid error:', error.message);
+    console.error('Email error:', error.message);
   }
 }
