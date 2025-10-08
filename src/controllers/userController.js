@@ -28,24 +28,14 @@ export const registerUser = async (req, res) => {
 
   sendEmail({
     to: email,
-    subject: "🎉 Welcome to Jascar's Health & Wellness!",
+    subject: " 🎉 Welcome to Jascar Health & Wellness",
+    text: `Hi ${name},\n\nYour account has been created successfully.\n\nBest regards,\nJascar Health & Wellness Team`,
     html: `
-      <div style="font-family: Arial, sans-serif; background-color: #f0f4f8; padding: 30px; text-align: center;">
-        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <h1 style="color:rgb(166, 38, 38);">Welcome, ${name}! 👋</h1>
-          <p style="font-size: 16px; color: #555;">Your account on <strong>Jascar's Health & Wellness</strong> has been created successfully.</p>
-          
-    
-  
-          <a href="https://your-login-link.com" 
-             style="display: inline-block; padding: 12px 25px; margin: 20px 0; font-size: 16px; color: #fff; background-color: rgb(166, 38, 38); border-radius: 5px; text-decoration: none;">
-            Login Now
-          </a>
-  
-          <p style="font-size: 14px; color: #999;">Get ready to explore personalized fitness, nutrition tips, and wellness insights tailored just for you.</p>
-  
-          <p style="font-size: 14px; color: #555;">Cheers,<br>Team Jascar's Health & Wellness ✨</p>
-        </div>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2>Welcome, ${name}!</h2>
+        <p>Your account on Jascar Health & Wellness has been created successfully.</p>
+        <p>You can now log in to access your personalized health and wellness dashboard.</p>
+        <p>Best regards,<br>Jascar Health & Wellness Team</p>
       </div>
     `,
   });

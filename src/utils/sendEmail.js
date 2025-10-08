@@ -12,14 +12,23 @@ export default async function sendEmail({ to, subject, text, html }) {
 
   const msg = {
     to,
-    from: 'jascarshw@gmail.com', // Must be verified in SendGrid
+    from: {
+      email: process.env.EMAIL_USER,
+      name: 'Jascar Health & Wellness'
+    },
     subject,
     text,
     html,
+    headers: {
+      'X-Priority': '3',
+      'X-MSMail-Priority': 'Normal'
+    },
+    tracking_settings: {
+      click_tracking: { enable: false },
+      open_tracking: { enable: false }
+    },
     mail_settings: {
-      sandbox_mode: {
-        enable: false // Set to true for testing without sending real emails
-      }
+      sandbox_mode: { enable: false }
     }
   };
 
