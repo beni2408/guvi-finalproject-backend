@@ -81,14 +81,13 @@ export const loginUser = async (req, res) => {
 };
 
 // update User
-
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email, password, age, gender, height, weight } = req.body;
+  const { name, email, password, age, gender, height, weight, profileImage } = req.body;
 
   const user = await userModel.findByIdAndUpdate(
     id,
-    { name, email, password, age, gender, height, weight },
+    { name, email, password, age, gender, height, weight, profileImage },
     { new: true }
   );
 
@@ -99,4 +98,63 @@ export const updateUser = async (req, res) => {
       user,
     },
   });
+};
+
+// Upload profile image
+export const uploadProfileImage = async (req, res) => {
+  const upload = (await import('../middlewares/uploadMiddleware.js')).default;
+  
+  upload.single('profileImage')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({
+        status: "error",
+        message: err.message
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        status: "error",
+        message: "No file uploaded"
+      });
+    }
+
+    try {
+      const user = await userModel.findById(req.user._id);
+      user.profileImage = `/uploads/profiles/${req.file.filename}`;
+      await user.save();
+      
+      res.status(200).json({
+        status: "success",
+        message: "Profile image uploaded successfully",
+        data: {
+          profileImage: user.profileImage
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        message: "Server error"
+      });
+    }
+  });
+};
+
+// Delete profile image
+export const deleteProfileImage = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id);
+    user.profileImage = null;
+    await user.save();
+    
+    res.status(200).json({
+      status: "success",
+      message: "Profile image deleted successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Server error"
+    });
+  }
 };

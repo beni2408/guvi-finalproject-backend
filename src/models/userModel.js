@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     gender: { type: String, required: true, enum: ["male", "female"] },
     height: Number,
     weight: Number,
+    profileImage: { type: String, default: null },
   },
   { timestamps: true }
 );

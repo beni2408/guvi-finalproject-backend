@@ -14,6 +14,7 @@ const app = express();
 app.use(cors()); // Allow all origins (for development)
 
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 app.use("/api/auth", authRouter);
 app.use("/api/fitness", fitnessRouter);
 app.use("/api/nutrition", nutritionRouter);
