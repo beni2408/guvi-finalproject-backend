@@ -1,49 +1,27 @@
-import sgMail from "@sendgrid/mail";
+import nodemailer from 'nodemailer';
 
 export default async function sendEmail({ to, subject, text, html }) {
-  console.log("SENDGRID_API_KEY exists:", !!process.env.SENDGRID_API_KEY);
+  const transporter = nodemailer.createTransporter({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
-  if (!process.env.SENDGRID_API_KEY) {
-    console.log("SendGrid API key not configured");
-    return;
-  }
-
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-  const msg = {
+  const mailOptions = {
+    from: `"Jascar Health & Wellness" <${process.env.EMAIL_USER}>`,
     to,
-    from: {
-      email: process.env.EMAIL_USER,
-      name: "Jascar Health & Wellness",
-    },
     subject,
     text,
-    html,
-    headers: {
-      "X-Priority": "3",
-      "X-MSMail-Priority": "Normal",
-    },
-    reply_to: {
-      email: process.env.EMAIL_USER,
-      name: "Jascar Health & Wellness",
-    },
-    tracking_settings: {
-      click_tracking: { enable: false },
-      open_tracking: { enable: false },
-    },
-    mail_settings: {
-      sandbox_mode: { enable: false },
-    },
+    html
   };
 
   try {
-    const response = await sgMail.send(msg);
-    console.log("Email sent successfully to:", to);
-    console.log("SendGrid response:", response[0].statusCode);
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to:', to);
+    console.log('Message ID:', info.messageId);
   } catch (error) {
-    console.error("SendGrid email error:", error.message);
-    if (error.response) {
-      console.error("SendGrid error details:", error.response.body);
-    }
+    console.error('Email error:', error.message);
   }
 }
