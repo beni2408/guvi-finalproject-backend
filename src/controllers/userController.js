@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import sendEmail from "../utils/sendEmail.js";
 //registering user
 export const registerUser = async (req, res) => {
-  const { name, email, password, age, gender, height, weight, preferences } =
+  const { name, email, password, age, gender, height, weight, mobile, preferences } =
     req.body;
 
   const user = await userModel.findOne({ email });
@@ -23,6 +23,7 @@ export const registerUser = async (req, res) => {
     gender,
     height,
     weight,
+    mobile,
   });
   const token = generateToken({ id: newUser._id });
 
@@ -48,6 +49,118 @@ export const registerUser = async (req, res) => {
       token,
     },
   });
+};
+
+// forgot password - send OTP to mobile
+export const forgotPassword = async (req, res) => {
+  try {
+    const { mobile } = req.body;
+    
+    // Check if user exists
+    const user = await userModel.findOne({ mobile });
+    if (!user) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "User not found with this mobile number" 
+      });
+    }
+    
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Save OTP and expiry (5 minutes)
+    user.otp = otp;
+    user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    await user.save();
+    
+    // In production, send SMS using Twilio/AWS SNS
+    console.log(`OTP for ${mobile}: ${otp}`);
+    
+    res.status(200).json({
+      status: "success",
+      message: `OTP sent to mobile number ${mobile}. (For demo: ${otp})`
+    });
+    
+  } catch (error) {
+    res.status(500).json({ 
+      status: "error", 
+      message: "Server error" 
+    });
+  }
+};
+
+// verify OTP
+export const verifyOTP = async (req, res) => {
+  try {
+    const { mobile, otp } = req.body;
+    
+    const user = await userModel.findOne({ mobile });
+    if (!user) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "User not found" 
+      });
+    }
+    
+    // Check if OTP is valid and not expired
+    if (user.otp !== otp || user.otpExpires < new Date()) {
+      return res.status(400).json({ 
+        status: "error", 
+        message: "Invalid or expired OTP" 
+      });
+    }
+    
+    res.status(200).json({
+      status: "success",
+      message: "OTP verified successfully"
+    });
+    
+  } catch (error) {
+    res.status(500).json({ 
+      status: "error", 
+      message: "Server error" 
+    });
+  }
+};
+
+// reset password
+export const resetPassword = async (req, res) => {
+  try {
+    const { mobile, otp, newPassword } = req.body;
+    
+    const user = await userModel.findOne({ mobile });
+    if (!user) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "User not found" 
+      });
+    }
+    
+    // Verify OTP again
+    if (user.otp !== otp || user.otpExpires < new Date()) {
+      return res.status(400).json({ 
+        status: "error", 
+        message: "Invalid or expired OTP" 
+      });
+    }
+    
+    // Update password and clear OTP
+    user.password = newPassword;
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+    
+    res.status(200).json({
+      status: "success",
+      message: "Password reset successfully"
+    });
+    
+  } catch (error) {
+    res.status(500).json({ 
+      status: "error", 
+      message: "Server error" 
+    });
+  }
 };
 
 // login user
