@@ -10,10 +10,7 @@ const userSchema = new mongoose.Schema(
     gender: { type: String, required: true, enum: ["male", "female"] },
     height: Number,
     weight: Number,
-    mobile: { type: String, required: true },
     profileImage: { type: String, default: null },
-    otp: { type: String, default: null },
-    otpExpires: { type: Date, default: null },
   },
   { timestamps: true }
 );
