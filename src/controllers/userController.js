@@ -28,7 +28,7 @@ export const registerUser = async (req, res) => {
 
   sendEmail({
     to: email,
-    subject: " 🎉 Welcome to Jascar Health & Wellness",
+    subject: "Account Created - Jascar Health Platform",
     text: `Hi ${name},\n\nYour account has been created successfully.\n\nBest regards,\nJascar Health & Wellness Team`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
