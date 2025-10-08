@@ -106,3 +106,50 @@ export const getFitnessStats = async (req, res) => {
     },
   });
 };
+
+// Update fitness activity
+export const updateFitness = async (req, res) => {
+  const { id } = req.params;
+  const { activity, caloriesBurned, duration, distance } = req.body;
+
+  const updatedActivity = await fitnessModel.findOneAndUpdate(
+    { _id: id, userId: req.user._id },
+    { activity, caloriesBurned, duration, distance },
+    { new: true }
+  );
+
+  if (!updatedActivity) {
+    return res.status(404).json({
+      status: "error",
+      message: "Activity not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Activity updated successfully",
+    data: { activity: updatedActivity }
+  });
+};
+
+// Delete fitness activity
+export const deleteFitness = async (req, res) => {
+  const { id } = req.params;
+
+  const deletedActivity = await fitnessModel.findOneAndDelete({
+    _id: id,
+    userId: req.user._id
+  });
+
+  if (!deletedActivity) {
+    return res.status(404).json({
+      status: "error",
+      message: "Activity not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Activity deleted successfully"
+  });
+};

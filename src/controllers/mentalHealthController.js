@@ -45,3 +45,50 @@ export const getMentalHealthStats = async (req, res) => {
     }
   });
 };
+
+// Update mental health entry
+export const updateMentalHealth = async (req, res) => {
+  const { id } = req.params;
+  const { moodRating, stressLevel, sleepHours, notes, activities } = req.body;
+
+  const updatedEntry = await mentalHealthModel.findOneAndUpdate(
+    { _id: id, userId: req.user._id },
+    { moodRating, stressLevel, sleepHours, notes, activities },
+    { new: true }
+  );
+
+  if (!updatedEntry) {
+    return res.status(404).json({
+      status: "error",
+      message: "Mental health entry not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Mental health entry updated successfully",
+    data: { entry: updatedEntry }
+  });
+};
+
+// Delete mental health entry
+export const deleteMentalHealth = async (req, res) => {
+  const { id } = req.params;
+
+  const deletedEntry = await mentalHealthModel.findOneAndDelete({
+    _id: id,
+    userId: req.user._id
+  });
+
+  if (!deletedEntry) {
+    return res.status(404).json({
+      status: "error",
+      message: "Mental health entry not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Mental health entry deleted successfully"
+  });
+};

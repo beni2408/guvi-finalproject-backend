@@ -49,3 +49,50 @@ export const getNutritionStats = async (req, res) => {
     }
   });
 };
+
+// Update food entry
+export const updateFood = async (req, res) => {
+  const { id } = req.params;
+  const { foodName, calories, protein, carbs, fat, quantity, mealType } = req.body;
+
+  const updatedFood = await nutritionModel.findOneAndUpdate(
+    { _id: id, userId: req.user._id },
+    { foodName, calories, protein, carbs, fat, quantity, mealType },
+    { new: true }
+  );
+
+  if (!updatedFood) {
+    return res.status(404).json({
+      status: "error",
+      message: "Food entry not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Food entry updated successfully",
+    data: { food: updatedFood }
+  });
+};
+
+// Delete food entry
+export const deleteFood = async (req, res) => {
+  const { id } = req.params;
+
+  const deletedFood = await nutritionModel.findOneAndDelete({
+    _id: id,
+    userId: req.user._id
+  });
+
+  if (!deletedFood) {
+    return res.status(404).json({
+      status: "error",
+      message: "Food entry not found"
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Food entry deleted successfully"
+  });
+};
