@@ -24,9 +24,13 @@ export default async function sendEmail({ to, subject, text, html }) {
   };
 
   try {
-    await sgMail.send(msg);
+    const response = await sgMail.send(msg);
     console.log('Email sent successfully to:', to);
+    console.log('SendGrid response:', response[0].statusCode);
   } catch (error) {
     console.error('SendGrid email error:', error.message);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
   }
 }
