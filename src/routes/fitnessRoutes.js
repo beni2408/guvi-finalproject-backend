@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { logFitness, getFitnessHistory, getFitnessStats, updateFitness, deleteFitness } from "../controllers/fitnessController.js";
+import {
+  logFitness,
+  getFitnessHistory,
+  getFitnessStats,
+  updateFitness,
+  deleteFitness,
+} from "../controllers/fitnessController.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
 
 const fitnessRouter = Router();

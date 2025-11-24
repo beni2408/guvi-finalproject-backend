@@ -14,20 +14,20 @@ const app = express();
 app.use(cors()); // Allow all origins (for development)
 
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 
 // Root route
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.json({
-    message: 'Jascar Health & Wellness API is running!',
-    status: 'success',
+    message: "Jascar Health & Wellness API is running!",
+    status: "success",
     endpoints: {
-      auth: '/api/auth',
-      fitness: '/api/fitness',
-      nutrition: '/api/nutrition',
-      goals: '/api/goals',
-      mentalHealth: '/api/mental-health'
-    }
+      auth: "/api/auth",
+      fitness: "/api/fitness",
+      nutrition: "/api/nutrition",
+      goals: "/api/goals",
+      mentalHealth: "/api/mental-health",
+    },
   });
 });
 
