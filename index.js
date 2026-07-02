@@ -44,3 +44,9 @@ connectDB().then(() => {
     console.log(`Server is running on port ${PORT}`);
   });
 });
+
+// Health check for keep-alive pinger
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
